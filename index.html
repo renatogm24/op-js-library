@@ -188,7 +188,17 @@
     <div id="content" class="content"></div>
 </body>
 <script>
-    let myLibrary = [];
+
+    let myLibrary;
+
+    if (localStorage.getItem('myLibrary')) {
+        myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
+    }
+    else {
+        myLibrary = [];
+    }
+
+    
     let deleteLibrary;
 
     function Book(title, author, pages, isRead) {
@@ -218,6 +228,7 @@
         let bookReadBool = false;
         bookRead.checked ? bookReadBool = true : bookReadBool = false;
         addBookToLibrary(new Book(bookName, bookAuthor, bookPages, bookReadBool));
+        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
         drawBooks(myLibrary);
         document.getElementById("bookName").value = "";
         document.getElementById("bookAuthor").value = "";
@@ -226,11 +237,11 @@
         newBook();
     }
 
-    const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", "295", false);
+    /*const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", "295", false);
     myLibrary.push(theHobbit);
 
     const harryPotter = new Book("Harry Potter", "J.K. Rowling", "425", true);
-    myLibrary.push(harryPotter);
+    myLibrary.push(harryPotter);*/
 
     function addBookToLibrary(book) {
         myLibrary.push(book);
@@ -238,22 +249,24 @@
 
     function deleteBook(book) {
         const idToDelete = book.parentNode.id;
-        let newArr1 = myLibrary.slice(0,idToDelete);
-        let newArr2 = myLibrary.slice(idToDelete+1,myLibrary.length);
-        myLibrary = [...newArr1,...newArr2];
+        let newArr1 = myLibrary.slice(0, idToDelete);
+        let newArr2 = myLibrary.slice(idToDelete + 1, myLibrary.length);
+        myLibrary = [...newArr1, ...newArr2];
+        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
         drawBooks(myLibrary);
     }
-    
+
     function changeRead(book) {
         const idToChange = book.parentNode.parentNode.parentNode.id;
-        if(myLibrary[idToChange].isRead){
+        if (myLibrary[idToChange].isRead) {
             myLibrary[idToChange].isRead = false;
-        }else{
+        } else {
             myLibrary[idToChange].isRead = true;
         }
+        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
         drawBooks(myLibrary);
     }
-    
+
 
     drawBooks(myLibrary);
 
