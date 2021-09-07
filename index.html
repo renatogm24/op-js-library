@@ -6,19 +6,190 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Odin Project - Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi&display=swap" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 </head>
 <style>
+    body {
+        background-color: lightgray;
+        padding: 0px;
+        margin: 0px;
+        font-size: 16px;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Kaisei HarunoUmi', serif;
+    }
 
+    .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    #library {
+        align-self: center;
+        font-size: 26px;
+        margin-top: 10px;
+    }
+
+    #newBook {
+        align-self: center;
+        margin: 14px 0px 0px 0px;
+    }
+
+    #newBook button {
+        font-family: 'Kaisei HarunoUmi', serif;
+        font-size: 15px;
+        background-color: #2196F3;
+        color: whitesmoke;
+        border-radius: 5px;
+        border-color: transparent;
+    }
+
+    .bookForm {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px 0px 0px 0px;
+        justify-content: space-evenly;
+        background-color: whitesmoke;
+        right: 200px;
+        border-radius: 10px;
+        width: 400px;
+        height: 170px;
+        margin-top: 14px;
+        align-self: center;
+    }
+
+    #save {
+        font-family: 'Kaisei HarunoUmi', serif;
+        font-size: 12px;
+        align-self: center;
+    }
+
+    .content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        font-family: 'Kaisei HarunoUmi', serif;
+        width: 250px;
+        margin: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: whitesmoke;
+    }
+
+    .title {
+        font-size: 20px;
+        align-self: center;
+        margin-bottom: 10px;
+    }
+
+    .author {
+        font-size: 16px;
+        font-style: italic;
+        align-self: center;
+        margin-bottom: 10px;
+    }
+
+    .pages {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .isRead {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 43px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(18px);
+        -ms-transform: translateX(18px);
+        transform: translateX(18px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
 </style>
 
 <body>
-    <div class="content">
-        
-
+    <div id="library">The Odin Library</div>
+    <div id="newBook"><button onclick="newBook()">New book</button></div>
+    <div id="bookForm" class="bookForm">
+        <div>Book's name: <input id="bookName" type="text" required></div>
+        <div>Author: <input id="bookAuthor" type="text" required></div>
+        <div>Pages: <input id="bookPages" type="text" required></div>
+        <div>
+            <label for="read">
+                Already read?<input id="read" type="checkbox" name="read">
+            </label>
+        </div>
+        <button onclick="addBook()" id="save" type="submit">Save</button>
     </div>
+    <div id="content" class="content"></div>
 </body>
 <script>
     let myLibrary = [];
+    let deleteLibrary;
 
     function Book(title, author, pages, isRead) {
         this.title = title;
@@ -30,12 +201,83 @@
         }
     }
 
-    const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", "295", true);
+    function newBook() {
+        const x = document.getElementById("bookForm");
+        if (x.style.display === "none") {
+            x.style.display = "flex";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+    function addBook() {
+        let bookName = document.getElementById("bookName").value;
+        let bookAuthor = document.getElementById("bookAuthor").value;
+        let bookPages = document.getElementById("bookPages").value;
+        let bookRead = document.getElementById("read")
+        let bookReadBool = false;
+        bookRead.checked ? bookReadBool = true : bookReadBool = false;
+        addBookToLibrary(new Book(bookName, bookAuthor, bookPages, bookReadBool));
+        drawBooks(myLibrary);
+        document.getElementById("bookName").value = "";
+        document.getElementById("bookAuthor").value = "";
+        document.getElementById("bookPages").value = "";
+        document.getElementById("read").checked = false;
+        newBook();
+    }
+
+    const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", "295", false);
     myLibrary.push(theHobbit);
+
+    const harryPotter = new Book("Harry Potter", "J.K. Rowling", "425", true);
+    myLibrary.push(harryPotter);
 
     function addBookToLibrary(book) {
         myLibrary.push(book);
     }
+
+    function deleteBook(book) {
+        const idToDelete = book.parentNode.id;
+        let newArr1 = myLibrary.slice(0,idToDelete);
+        let newArr2 = myLibrary.slice(idToDelete+1,myLibrary.length);
+        myLibrary = [...newArr1,...newArr2];
+        drawBooks(myLibrary);
+    }
+    
+    function changeRead(book) {
+        const idToChange = book.parentNode.parentNode.parentNode.id;
+        if(myLibrary[idToChange].isRead){
+            myLibrary[idToChange].isRead = false;
+        }else{
+            myLibrary[idToChange].isRead = true;
+        }
+        drawBooks(myLibrary);
+    }
+    
+
+    drawBooks(myLibrary);
+
+    function drawBooks(myLibrary) {
+        var output = "";
+        for (let x = 0; x < myLibrary.length; x++) {
+            output += `<div id="${x}" class="card">
+            <i onclick="deleteBook(this)" class="icon-trash close"></i>
+            <div class="title">${myLibrary[x].title}</div>
+            <div class="author">by ${myLibrary[x].author}</div>
+            <div class="pages">${myLibrary[x].pages} pages</div>
+            <div class="isRead">
+                <div>${myLibrary[x].isRead ? "Already read" : "Not read"}</div>
+                <label class="switch">
+                    <input onclick="changeRead(this)" type="checkbox" ${myLibrary[x].isRead ? "checked" : ""}>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>`;
+        }
+        document.getElementById('content').innerHTML = output;
+    }
+
+
 
 </script>
 
