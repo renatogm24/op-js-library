@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Odin Project - Library</title>
+</head>
+<style>
+
+</style>
+
+<body>
+
+</body>
+<script>
+    let myLibrary = [];
+
+    function Book(title, author, pages, isRead) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.isRead = isRead;
+        this.info = function () {
+            return `${this.title} by ${this.author}, ${this.pages} pages, ${this.isRead ? "already read" : "not read yet"}`;
+        }
+    }
+
+    const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", "295", true);
+    myLibrary.push(theHobbit);
+
+    function addBookToLibrary(book) {
+        myLibrary.push(book);
+    }
+
+</script>
+
+</html>
