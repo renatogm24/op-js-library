@@ -198,16 +198,19 @@
         myLibrary = [];
     }
 
-    
+
     let deleteLibrary;
 
-    function Book(title, author, pages, isRead) {
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
-        this.isRead = isRead;
-        this.info = function () {
-            return `${this.title} by ${this.author}, ${this.pages} pages, ${this.isRead ? "already read" : "not read yet"}`;
+    class Book {
+        constructor(title, author, pages, isRead) {
+            this.title = title;
+            this.author = author;
+            this.pages = pages;
+            this.isRead = isRead;
+        }
+
+        info() {
+            return `${this.title} by ${this.author}, ${this.pages} pages, ${this.isRead ? "already read" : "not read yet"}`
         }
     }
 
@@ -228,7 +231,7 @@
         let bookReadBool = false;
         bookRead.checked ? bookReadBool = true : bookReadBool = false;
         addBookToLibrary(new Book(bookName, bookAuthor, bookPages, bookReadBool));
-        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
+        localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
         drawBooks(myLibrary);
         document.getElementById("bookName").value = "";
         document.getElementById("bookAuthor").value = "";
@@ -252,7 +255,7 @@
         let newArr1 = myLibrary.slice(0, idToDelete);
         let newArr2 = myLibrary.slice(idToDelete + 1, myLibrary.length);
         myLibrary = [...newArr1, ...newArr2];
-        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
+        localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
         drawBooks(myLibrary);
     }
 
@@ -263,7 +266,7 @@
         } else {
             myLibrary[idToChange].isRead = true;
         }
-        localStorage.setItem('myLibrary',JSON.stringify(myLibrary));
+        localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
         drawBooks(myLibrary);
     }
 
